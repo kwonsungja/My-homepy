@@ -96,6 +96,3 @@ if st.button("Show Report"):
     game_state = st.session_state.game_state
     st.write("### Final Report")
     st.write(f"**Total Score:** {game_state['score']} correct out of {game_state['trials']} attempts.")
-
-
-
