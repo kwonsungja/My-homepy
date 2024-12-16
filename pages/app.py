@@ -44,11 +44,11 @@ st.markdown("""
 3. Click **'Show Report'** to see your final score.
 """)
 
-# Enter User Name
-st.subheader("Enter Your Name")
+# Step 0: Enter User Name
+st.subheader("Step 0: Enter Your Name")
 if "user_name" not in st.session_state.user_state:
     st.session_state.user_state["user_name"] = ""  # Ensure key exists
-user_name = st.text_input(value=st.session_state.user_state["user_name"], placeholder="Enter your name here")
+user_name = st.text_input("Your Name", value=st.session_state.user_state["user_name"], placeholder="Enter your name here")
 
 if user_name:
     st.session_state.user_state["user_name"] = user_name
@@ -109,9 +109,3 @@ if st.button("Show Report"):
     user_name_display = state.get("user_name", "Player")  # Safeguard fallback
     st.subheader("Final Report")
     st.write(f"**{user_name_display}, Your Total Score:** {state['score']} correct out of {state['trials']} attempts.")
-
-
-
-
-
-
