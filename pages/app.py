@@ -36,7 +36,7 @@ if "user_state" not in st.session_state:
         "score": 0,
         "trials": 0,
         "current_index": -1,
-        "current_noun": None,
+        "current_noun": "",
         "feedback": "",
     }
 
@@ -49,7 +49,7 @@ st.markdown("""
 """)
 
 # Step 0: Enter Your Name
-st.markdown("### Enter Your Name")
+st.markdown("### Step 0: Enter Your Name")
 user_name = st.text_input("Your Name", placeholder="Enter your name here")
 if user_name:
     st.success(f"Welcome, **{user_name}**! 🎉")
@@ -60,8 +60,8 @@ levels = ["s", "es", "ies"]
 selected_level = st.selectbox("Choose a Level", levels)
 
 # Step 2: Show the Noun
-show_noun_button = st.button("Step 2: Show the Noun")
-if show_noun_button:
+st.markdown("### Step 2: Show the Noun")
+if st.button("Click to Show the Noun"):
     state = st.session_state.user_state
     if state["current_level"] != selected_level:
         state["remaining_nouns"] = df[df["level"] == selected_level].copy()
@@ -70,18 +70,24 @@ if show_noun_button:
     if not state["remaining_nouns"].empty:
         state["current_index"] = random.randint(0, len(state["remaining_nouns"]) - 1)
         state["current_noun"] = state["remaining_nouns"].iloc[state["current_index"]]["singular"]
-        st.session_state.feedback = ""
-        st.markdown(f"### Pluralize the noun: **{state['current_noun']}**")
+        state["feedback"] = ""  # Reset feedback
     else:
         st.warning("No nouns available for this level. Please select another level.")
 
-# Step 3: Input the Plural Form
-if st.session_state.user_state.get("current_noun"):
-    user_input = st.text_input("Step 3: Type the Plural Form Here", placeholder="Enter the plural form here")
+# Display the selected noun
+current_noun = st.session_state.user_state.get("current_noun", "")
+noun_display = st.text_input("Singular Noun", value=current_noun, disabled=True)
 
-    # Step 4: Check Answer
-    if st.button("Step 4: Check Answer"):
-        state = st.session_state.user_state
+# Step 3: Input the Plural Form
+st.markdown("### Step 3: Type Your Answer")
+user_input = st.text_input("Type the plural form here", placeholder="Enter the plural form")
+
+# Step 4: Check Answer
+if st.button("Check Answer"):
+    state = st.session_state.user_state
+    if not state["current_noun"]:
+        st.warning("Please click 'Show the Noun' first!")
+    else:
         correct_plural = pluralize(state["current_noun"])
         state["trials"] += 1
 
@@ -103,4 +109,5 @@ if st.button("Show Report"):
     state = st.session_state.user_state
     st.markdown("### Final Report")
     st.write(f"**Your Total Score:** {state['score']} correct out of {state['trials']} attempts.")
+
 
