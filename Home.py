@@ -1,14 +1,15 @@
 import streamlit as st
-import os
+from PIL import Image
 
 # Title
 st.write("# Welcome to my classroom")
 
-# Check if the image exists in the current directory
-image_path = "image.png"
+# Use the uploaded file path
+uploaded_image_path = "/mnt/data/image.png"
 
-if os.path.exists(image_path):
-    # Display the image with a caption
-    st.image(image_path, caption="A friendly teacher welcoming you!")
-else:
-    st.write("⚠️ Image file not found! Please make sure 'image.png' is in the same folder as this script.")
+# Load and display the uploaded image
+try:
+    image = Image.open(uploaded_image_path)
+    st.image(image, caption="A friendly teacher welcoming you!")
+except FileNotFoundError:
+    st.write("⚠️ Image file not found! Please upload a valid image.")
