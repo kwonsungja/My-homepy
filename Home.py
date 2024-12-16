@@ -12,4 +12,3 @@ if os.path.exists(image_path):
     st.image(image_path, caption="A friendly teacher welcoming you!")
 else:
     st.write("⚠️ Image file not found! Please make sure 'image.png' is in the same folder as this script.")
-streamlit run app.py
