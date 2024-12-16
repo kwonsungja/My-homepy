@@ -23,12 +23,9 @@ if "state" not in st.session_state:
     st.session_state.state = {
         "remaining_nouns": pd.DataFrame(),
         "current_level": None,
+        "current_noun": None,
         "score": 0,
-        "trials": 0,
-        "current_index": -1,
-        "level_scores": {"s": {"score": 0, "trials": 0}, 
-                         "es": {"score": 0, "trials": 0}, 
-                         "ies": {"score": 0, "trials": 0}}
+        "trials": 0
     }
 
 def pluralize(noun):
@@ -48,7 +45,7 @@ st.write("Follow the steps to practice your plural noun skills!")
 levels = df["level"].unique()
 selected_level = st.selectbox("Step 1: Select a Level", options=levels)
 
-# Update nouns based on level
+# Step 2: Show the Noun
 if st.button("Step 2: Show the Noun"):
     filtered = df[df["level"] == selected_level].copy()
     if not filtered.empty:
@@ -57,22 +54,32 @@ if st.button("Step 2: Show the Noun"):
         st.session_state.state["current_index"] = random.randint(0, len(filtered) - 1)
         current_noun = filtered.iloc[st.session_state.state["current_index"]]["singular"]
         st.session_state.state["current_noun"] = current_noun
-        st.write(f"What's the plural form of: **{current_noun}**?")
+        st.write(f"### What's the plural form of: **{current_noun}**?")
     else:
         st.error("No nouns found for the selected level.")
 
 # Step 3: Input answer
 user_input = st.text_input("Step 3: Type the plural form here")
 
-# Step 4: Check answer
-if st.button("Check Answer"):
+# Step 4: Check the Answer
+if st.button("Step 4: Check Answer"):
     state = st.session_state.state
-    if "current_noun" in state:
+    if state["current_noun"]:
         correct_plural = pluralize(state["current_noun"])
+        state["trials"] += 1
         if user_input.strip().lower() == correct_plural.strip().lower():
+            state["score"] += 1
             st.success(f"✅ Correct! '{correct_plural}' is the plural form.")
+            # Remove the noun from remaining nouns
+            state["remaining_nouns"] = state["remaining_nouns"].drop(
+                state["remaining_nouns"].index[state["current_index"]]
+            ).reset_index(drop=True)
         else:
             st.error(f"❌ Incorrect. The correct plural form is '{correct_plural}'.")
     else:
         st.warning("Please click 'Show the Noun' first.")
+
+# Show Score
+st.write(f"### Your Score: {st.session_state.state['score']}/{st.session_state.state['trials']}")
+
 
