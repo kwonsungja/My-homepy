@@ -1,22 +1,10 @@
 import streamlit as st
 
-# Setting the page title and layout
-st.set_page_config(page_title="Welcome", layout="centered")
+# Display the title
+st.write("# Welcome to my classroom")
 
-# Welcome Message
-st.write("# Welcome to my classroom!")
-st.write("### It's my app and homepage 😊")
-
-# Adding an image or visual element
+# Add a visual woman picture
 st.image(
-    "https://via.placeholder.com/800x400.png?text=Welcome+to+My+Classroom",
-    caption="Your homepage image here",
+    "https://cdn.pixabay.com/photo/2020/07/01/12/58/woman-5364235_1280.png",
+    caption="A friendly teacher welcoming you!",
 )
-
-# Interactive button
-if st.button("Click me for a surprise!"):
-    st.write("🎉 Surprise! You're awesome! 🎉")
-
-# Footer
-st.write("---")
-st.write("Made with ❤️ using Streamlit")
