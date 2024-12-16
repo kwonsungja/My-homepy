@@ -17,7 +17,6 @@ df = load_data()
 
 # Pluralization logic
 def pluralize(noun):
-    noun = noun.strip()
     if noun.endswith(('s', 'ss', 'sh', 'ch', 'x', 'z', 'o')):
         return noun + 'es'
     elif noun.endswith('y') and not noun[-2] in 'aeiou':
@@ -33,7 +32,7 @@ if "user_state" not in st.session_state:
         "score": 0,
         "trials": 0,
         "feedback": "",
-        "user_name": None,  # Initialize with None
+        "user_name": "",
     }
 
 # Layout Title and Instructions
@@ -46,16 +45,14 @@ st.markdown("""
 """)
 
 # Step 0: Enter User Name
-if st.session_state.user_state["user_name"] is None:
-    st.subheader("Step 0: Enter Your Name")
-    user_name = st.text_input("Your Name", placeholder="Enter your name here")
-    if user_name:
-        st.session_state.user_state["user_name"] = user_name
-        st.success(f"Welcome, **{user_name}**!")
-        st.experimental_rerun()
-else:
-    user_name = st.session_state.user_state["user_name"]
-    st.write(f"### 👋 Welcome, **{user_name}**!")
+st.subheader("Step 0: Enter Your Name")
+if "user_name" not in st.session_state.user_state:
+    st.session_state.user_state["user_name"] = ""  # Ensure key exists
+user_name = st.text_input("Your Name", value=st.session_state.user_state["user_name"], placeholder="Enter your name here")
+
+if user_name:
+    st.session_state.user_state["user_name"] = user_name
+    st.success(f"Welcome, **{user_name}**! 🎉")
 
 # Step 1: Select a Level
 st.subheader("Step 1: Select a Level to Start")
@@ -112,6 +109,7 @@ if st.button("Show Report"):
     user_name_display = state.get("user_name", "Player")  # Safeguard fallback
     st.subheader("Final Report")
     st.write(f"**{user_name_display}, Your Total Score:** {state['score']} correct out of {state['trials']} attempts.")
+
 
 
 
