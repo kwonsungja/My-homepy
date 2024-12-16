@@ -25,7 +25,8 @@ if "state" not in st.session_state:
         "current_level": None,
         "current_noun": None,
         "score": 0,
-        "trials": 0
+        "trials": 0,
+        "user_name": ""
     }
 
 def pluralize(noun):
@@ -39,11 +40,18 @@ def pluralize(noun):
 
 # UI Components
 st.title("NounSmart: Practice Regular Plural Nouns")
-st.write("Follow the steps to practice your plural noun skills!")
+
+# Step 0: Enter your name
+st.write("### Step 0: Enter Your Name")
+user_name = st.text_input("Enter your name to personalize the app", value=st.session_state.state["user_name"])
+if user_name:
+    st.session_state.state["user_name"] = user_name
+    st.write(f"### Welcome, {user_name}! 🎉")
 
 # Step 1: Select a level
+st.write("### Step 1: Select a Level")
 levels = df["level"].unique()
-selected_level = st.selectbox("Step 1: Select a Level", options=levels)
+selected_level = st.selectbox("Choose a Level", options=levels)
 
 # Step 2: Show the Noun
 if st.button("Step 2: Show the Noun"):
@@ -58,8 +66,9 @@ if st.button("Step 2: Show the Noun"):
     else:
         st.error("No nouns found for the selected level.")
 
-# Step 3: Input answer
-user_input = st.text_input("Step 3: Type the plural form here")
+# Step 3: Input the Answer
+st.write("### Step 3: Type the Plural Form Here")
+user_input = st.text_input("Your Answer:")
 
 # Step 4: Check the Answer
 if st.button("Step 4: Check Answer"):
@@ -79,7 +88,8 @@ if st.button("Step 4: Check Answer"):
     else:
         st.warning("Please click 'Show the Noun' first.")
 
-# Show Score
-st.write(f"### Your Score: {st.session_state.state['score']}/{st.session_state.state['trials']}")
+# Step 5: Show Total Score
+st.write(f"### Your Score: {st.session_state.state['score']} / {st.session_state.state['trials']}")
+
 
 
