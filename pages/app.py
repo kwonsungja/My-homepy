@@ -24,47 +24,47 @@ def pluralize(noun):
         return noun[:-1] + 'ies'
     return noun + 's'
 
-# Initialize session state for game_state
-if "game_state" not in st.session_state:
-    st.session_state.game_state = {
+# Initialize session state for user state
+if "user_state" not in st.session_state:
+    st.session_state.user_state = {
         "remaining_nouns": pd.DataFrame(),
         "current_level": None,
         "current_noun": "",
         "score": 0,
         "trials": 0,
         "feedback": "",
-        "user_name": None,  # Ensure user_name is initialized as None
+        "user_name": "",
     }
 
-# Layout
+# Streamlit Layout
 st.title("NounSmart: Practice Regular Plural Nouns")
-st.markdown("""
+st.write("""
 ## How to Use the App
-1. Enter your name to personalize the experience.
-2. Follow the steps **from Step 1 to Step 4**.
-3. Click **'Show Report'** to view overall feedback across all levels.
+1. **Enter your name** to personalize the app.
+2. **Follow the steps** from Step 1 to Step 4.
+3. Click **'Show Report'** to see your final score.
 """)
 
 # Step 0: Enter User Name
-if st.session_state.game_state["user_name"] is None:
+if not st.session_state.user_state["user_name"]:
     st.markdown("### **Step 0: Enter Your Name**")
     user_name = st.text_input("Your Name", placeholder="Enter your name here")
     if user_name:
-        st.session_state.game_state["user_name"] = user_name
+        st.session_state.user_state["user_name"] = user_name
         st.success(f"Welcome, **{user_name}**! 🎉")
         st.experimental_rerun()
 else:
-    user_name = st.session_state.game_state["user_name"]
-    st.write(f"### 👋 Welcome, **{user_name}!**")
+    user_name = st.session_state.user_state["user_name"]
+    st.write(f"### 👋 Welcome, **{user_name}**!")
 
 # Step 1: Select a Level
 st.markdown("### **Step 1: Select a Level to Start**")
-levels = ["s", "es", "ies"]
+levels = df["level"].unique()
 selected_level = st.selectbox("Choose a Level", levels)
 
 # Step 2: Show the Noun
 if st.button("Step 2: Show the Noun"):
-    state = st.session_state.game_state
+    state = st.session_state.user_state
     if state["current_level"] != selected_level:
         state["remaining_nouns"] = df[df["level"] == selected_level].copy()
         state["current_level"], state["score"], state["trials"] = selected_level, 0, 0
@@ -76,7 +76,7 @@ if st.button("Step 2: Show the Noun"):
         st.warning("No nouns available for this level. Please select a different level.")
 
 # Display the noun
-current_noun = st.session_state.game_state["current_noun"]
+current_noun = st.session_state.user_state["current_noun"]
 if current_noun:
     st.text_input("Singular Noun", value=current_noun, disabled=True)
 
@@ -86,7 +86,7 @@ user_input = st.text_input("Type the plural form here:")
 
 # Step 4: Check Answer
 if st.button("Step 4: Check Answer"):
-    state = st.session_state.game_state
+    state = st.session_state.user_state
     if not state["current_noun"]:
         st.warning("Please click 'Show the Noun' first!")
     else:
@@ -107,10 +107,11 @@ if st.button("Step 4: Check Answer"):
         st.success(state["feedback"])
         st.write(f"### {state['user_name']}, Your Score: {state['score']} / {state['trials']}")
 
-# Show Report
+# Final Report
 if st.button("Show Report"):
-    state = st.session_state.game_state
+    state = st.session_state.user_state
     st.markdown("### **Final Report**")
     st.write(f"**{state['user_name']}, Your Total Score:** {state['score']} correct out of {state['trials']} attempts.")
+
 
 
