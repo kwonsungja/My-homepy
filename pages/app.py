@@ -24,7 +24,7 @@ def pluralize(noun):
         return noun[:-1] + 'ies'
     return noun + 's'
 
-# Initialize session state
+# Initialize session state for game_state
 if "game_state" not in st.session_state:
     st.session_state.game_state = {
         "remaining_nouns": pd.DataFrame(),
@@ -33,7 +33,7 @@ if "game_state" not in st.session_state:
         "score": 0,
         "trials": 0,
         "feedback": "",
-        "user_name": "",
+        "user_name": None,  # Ensure user_name is initialized as None
     }
 
 # Layout
@@ -46,7 +46,7 @@ st.markdown("""
 """)
 
 # Step 0: Enter User Name
-if not st.session_state.game_state["user_name"]:
+if st.session_state.game_state["user_name"] is None:
     st.markdown("### **Step 0: Enter Your Name**")
     user_name = st.text_input("Your Name", placeholder="Enter your name here")
     if user_name:
@@ -54,7 +54,8 @@ if not st.session_state.game_state["user_name"]:
         st.success(f"Welcome, **{user_name}**! 🎉")
         st.experimental_rerun()
 else:
-    st.write(f"### 👋 Welcome, **{st.session_state.game_state['user_name']}!**")
+    user_name = st.session_state.game_state["user_name"]
+    st.write(f"### 👋 Welcome, **{user_name}!**")
 
 # Step 1: Select a Level
 st.markdown("### **Step 1: Select a Level to Start**")
@@ -111,4 +112,5 @@ if st.button("Show Report"):
     state = st.session_state.game_state
     st.markdown("### **Final Report**")
     st.write(f"**{state['user_name']}, Your Total Score:** {state['score']} correct out of {state['trials']} attempts.")
+
 
