@@ -44,7 +44,7 @@ st.markdown("""
 3. Click **'Show Report'** to see your final score.
 """)
 
-# Step 0: Enter User Name
+# Enter User Name
 st.subheader("Step 0: Enter Your Name")
 if "user_name" not in st.session_state.user_state:
     st.session_state.user_state["user_name"] = ""  # Ensure key exists
