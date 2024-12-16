@@ -48,7 +48,7 @@ st.markdown("""
 st.subheader("Enter Your Name")
 if "user_name" not in st.session_state.user_state:
     st.session_state.user_state["user_name"] = ""  # Ensure key exists
-user_name = st.text_input("Your Name", value=st.session_state.user_state["user_name"], placeholder="Enter your name here")
+user_name = st.text_input(value=st.session_state.user_state["user_name"], placeholder="Enter your name here")
 
 if user_name:
     st.session_state.user_state["user_name"] = user_name
